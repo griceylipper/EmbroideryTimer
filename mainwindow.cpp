@@ -71,3 +71,9 @@ void MainWindow::on_openButton_clicked()
     OpenFile();
     return;
 }
+
+//void MainWindow::on_pushButton_2_clicked()
+//{
+//    OpenFile();
+//    return;
+//}
