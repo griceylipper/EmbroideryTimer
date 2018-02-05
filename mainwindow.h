@@ -15,10 +15,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+   void on_actionOpen_triggered();
+
 private:
     Ui::MainWindow *ui;
     void on_openButton_Clicked();
-    void on_actionOpen_triggered();
+    QString filename;
+
 };
 
 #endif // MAINWINDOW_H
