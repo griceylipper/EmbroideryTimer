@@ -16,11 +16,12 @@ public:
     ~MainWindow();
 
 private slots:
-   void on_actionOpen_triggered();
+    void on_actionOpen_triggered();
+    void on_openButton_clicked();
 
 private:
     Ui::MainWindow *ui;
-    void on_openButton_Clicked();
+    void OpenFile();
     QString filename;
 
 };
