@@ -41,8 +41,10 @@ void MainWindow::on_actionOpen_triggered()
     QTextStream in(&sFile);
     QString text = in.readAll();
 
+    //Not working?
     int pos = filename.lastIndexOf(QChar('/'));
     ui->filenameLabel->setText(filename.right(pos));
+
     ui->textBrowser->setPlainText(text);
 
     sFile.close();
