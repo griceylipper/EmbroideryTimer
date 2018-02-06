@@ -73,15 +73,16 @@ void MainWindow::OpenFile()
     int firstByte = 0x200;
     qDebug() << "firstByte = " << firstByte;
 
-    qUncompress(textByteArray);
-    if (textByteArray.isEmpty())
+
+    qUncompress(choppedByteArray);
+    if (choppedByteArray.isEmpty())
     {
         //Nope
         ui->textBrowser->setPlainText("File corrput");
     }
 
     QString uncompressedText;
-    uncompressedText.fromUtf8(textByteArray);
+    uncompressedText.fromUtf8(choppedByteArray);
 
     //Not working?
     int pos = filename.lastIndexOf(QChar('/'));
