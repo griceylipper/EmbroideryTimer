@@ -73,6 +73,7 @@ void MainWindow::OpenFile()
     int firstByte = 0x200;
     qDebug() << "firstByte = " << firstByte;
 
+    QByteArray choppedByteArray = textByteArray.right(textByteArray.size()-firstByte);
 
     qUncompress(choppedByteArray);
     if (choppedByteArray.isEmpty())
