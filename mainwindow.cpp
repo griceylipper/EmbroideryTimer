@@ -36,8 +36,43 @@ void MainWindow::OpenFile()
     QTextStream in(&sFile);
     QString text = in.readAll();
 
+
     //uncompress file
     QByteArray textByteArray = text.toUtf8();
+
+//    bool foundPadding = false;
+//    bool foundCompressedData = false;
+//    int firstByte = -1;
+//    for (int i = 0; i < 127; i++)
+//    {
+//        //0x20 is the padding byte
+//        //If group of 16 bytes starts with padding
+//        if (textByteArray[i * 16] == 0x20)
+//        {
+//            for (int j = 0; j < 16; j++)
+//            {
+//                //If next 16 bytes are all padding
+//                if (textByteArray[i + j] == 0x20)
+//                {
+//                    foundPadding = true;
+//                    continue;
+//                }
+//            }
+//        }
+//        else
+//        {
+//            //Padding has ended
+//            if (foundPadding)
+//            {
+//                foundCompressedData = true;
+//                firstByte = i * 16;
+//            }
+//        }
+//    }
+
+    int firstByte = 0x200;
+    qDebug() << "firstByte = " << firstByte;
+
     qUncompress(textByteArray);
     if (textByteArray.isEmpty())
     {
