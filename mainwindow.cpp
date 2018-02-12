@@ -3,6 +3,7 @@
 #include <QtCore>
 #include <QFileDialog>
 #include <QFile>
+#include "stitch.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,6 +41,15 @@ void MainWindow::OpenFile()
     //uncompress file
     QByteArray textByteArray = text.toUtf8();
 
+    //firstByte skips position to after data header
+    int firstByte = 0x200;
+    for (int i = 0; i < 3; ++i)
+    {
+        //Something not quite working here?
+        QString valueInHex= QString("%1").arg(int(textByteArray[i + firstByte]), 0, 16);
+        qDebug() << "Byte " << i << " = " << valueInHex;
+    }
+
 //    bool foundPadding = false;
 //    bool foundCompressedData = false;
 //    int firstByte = -1;
@@ -69,9 +79,6 @@ void MainWindow::OpenFile()
 //            }
 //        }
 //    }
-
-    int firstByte = 0x200;
-    qDebug() << "firstByte = " << firstByte;
 
     qUncompress(textByteArray);
     if (textByteArray.isEmpty())
