@@ -6,16 +6,17 @@ class Stitch
 {
 public:
     Stitch();
-    void CalculateLength();
+    void Calculate();
     int GetLength();
+    void SetBytes(char byte0, char byte1, char byte2);
 
 private:
-    char bytes_[3];
-    char padding_;
+    unsigned char bytes_[3];
+    unsigned char padding_;
     int x_;
     int y_;
-    int length_;
-    int flags_;
+    unsigned int length_;
+    unsigned int flags_;
 };
 
 #endif // STITCH_H

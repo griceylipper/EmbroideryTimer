@@ -41,14 +41,28 @@ void MainWindow::OpenFile()
     //uncompress file
     QByteArray textByteArray = text.toUtf8();
 
-    //firstByte skips position to after data header
-    int firstByte = 0x200;
-    for (int i = 0; i < 3; ++i)
+    //header skips position to after data header. Not sure why it's offset by 0x0C, but oh well
+    int header = 0x200 - 0x0C;
+//    for (int i = 0; i < 3; ++i)
+//    {
+//        //Something not quite working here?
+//        //QString valueInHex= QString("%1").arg(char(textByteArray[i + header]), 0, 16);
+//        qDebug() << "Byte " << i << " = " << valueInHex;
+//    }
+
+    Stitch stitches[(sizeof(textByteArray) / 3 ) + 200];
+
+    for (uint i = 0; i < sizeof(textByteArray); i += 3)
     {
-        //Something not quite working here?
-        QString valueInHex= QString("%1").arg(int(textByteArray[i + firstByte]), 0, 16);
-        qDebug() << "Byte " << i << " = " << valueInHex;
+        stitches[i / 3].SetBytes(textByteArray[header + i],textByteArray[header + i + 1], textByteArray[header + i + 2]);
     }
+
+    for (uint i = 0; i < (sizeof(textByteArray) / 3); i++)
+    {
+        stitches[i].Calculate();
+    }
+
+
 
 //    bool foundPadding = false;
 //    bool foundCompressedData = false;
@@ -84,7 +98,13 @@ void MainWindow::OpenFile()
     int pos = filename.lastIndexOf(QChar('/'));
     ui->filenameLabel->setText(filename.right(pos));
 
-    //ui->textBrowser->setPlainText(uncompressedText);
+    QString outputText;
+    for (uint i = 0; i < (sizeof(textByteArray) / 3); i++)
+    {
+        text.append(QString("Stitch ").append(QString::number(i).append(QString(": length =").append(stitches[i].GetLength()))));
+    }
+
+    ui->textBrowser->setPlainText(outputText);
 
     sFile.close();
     return;
@@ -99,7 +119,6 @@ void MainWindow::on_actionOpen_triggered()
 
 void MainWindow::on_openButton_clicked()
 {
-    //Not working?
     OpenFile();
     return;
 }
