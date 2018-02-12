@@ -34,12 +34,13 @@ void MainWindow::OpenFile()
         return;
     }
     filename = file;
-    QTextStream in(&sFile);
-    QString text = in.readAll();
+//    QTextStream in(&sFile);
+//    QString text = in.readAll();
 
 
-    //uncompress file
-    QByteArray textByteArray = text.toUtf8();
+//    //uncompress file
+//    QByteArray textByteArray = text.toUtf8();
+    QByteArray textByteArray = sFile.readAll();
 
     //header skips position to after data header. Not sure why it's offset by 0x0C, but oh well
     int header = 0x200 - 0x0C;
@@ -50,58 +51,27 @@ void MainWindow::OpenFile()
 //        qDebug() << "Byte " << i << " = " << valueInHex;
 //    }
 
-    Stitch stitches[(sizeof(textByteArray) / 3 ) + 200];
+    int test[6];
+    Stitch stitches[(textByteArray.size() / 3) + 200];
 
-    for (uint i = 0; i < sizeof(textByteArray); i += 3)
+    for (uint i = 0; i < textByteArray.size(); i += 3)
     {
         stitches[i / 3].SetBytes(textByteArray[header + i],textByteArray[header + i + 1], textByteArray[header + i + 2]);
     }
 
-    for (uint i = 0; i < (sizeof(textByteArray) / 3); i++)
+    for (uint i = 0; i < (textByteArray.size() / 3); i++)
     {
         stitches[i].Calculate();
     }
-
-
-
-//    bool foundPadding = false;
-//    bool foundCompressedData = false;
-//    int firstByte = -1;
-//    for (int i = 0; i < 127; i++)
-//    {
-//        //0x20 is the padding byte
-//        //If group of 16 bytes starts with padding
-//        if (textByteArray[i * 16] == 0x20)
-//        {
-//            for (int j = 0; j < 16; j++)
-//            {
-//                //If next 16 bytes are all padding
-//                if (textByteArray[i + j] == 0x20)
-//                {
-//                    foundPadding = true;
-//                    continue;
-//                }
-//            }
-//        }
-//        else
-//        {
-//            //Padding has ended
-//            if (foundPadding)
-//            {
-//                foundCompressedData = true;
-//                firstByte = i * 16;
-//            }
-//        }
-//    }
 
     //Not working?
     int pos = filename.lastIndexOf(QChar('/'));
     ui->filenameLabel->setText(filename.right(pos));
 
     QString outputText;
-    for (uint i = 0; i < (sizeof(textByteArray) / 3); i++)
+    for (uint i = 0; i < (textByteArray.size() / 3); i++)
     {
-        text.append(QString("Stitch ").append(QString::number(i).append(QString(": length =").append(stitches[i].GetLength()))));
+        outputText.append(QString("Stitch ").append(QString::number(i).append(QString(": length =").append(stitches[i].GetLength()))));
     }
 
     ui->textBrowser->setPlainText(outputText);
