@@ -80,15 +80,25 @@ void MainWindow::OpenFile()
 //        }
 //    }
 
+<<<<<<< HEAD
     qUncompress(textByteArray);
     if (textByteArray.isEmpty())
+=======
+    int firstByte = 0x200;
+    qDebug() << "firstByte = " << firstByte;
+
+    QByteArray choppedByteArray = textByteArray.right(textByteArray.size()-firstByte);
+
+    qUncompress(choppedByteArray);
+    if (choppedByteArray.isEmpty())
+>>>>>>> 10a98a2eafe5a33a04f29c16c1ad5ab445c0487e
     {
         //Nope
         ui->textBrowser->setPlainText("File corrput");
     }
 
     QString uncompressedText;
-    uncompressedText.fromUtf8(textByteArray);
+    uncompressedText.fromUtf8(choppedByteArray);
 
     //Not working?
     int pos = filename.lastIndexOf(QChar('/'));
