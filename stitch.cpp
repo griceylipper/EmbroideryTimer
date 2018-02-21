@@ -46,7 +46,7 @@ void Stitch::Calculate()
     length_ = sqrt((x_ * x_) + (y_ * y_));
 }
 
-int Stitch::GetLength()
+float Stitch::GetLength()
 {
     return length_;
 }

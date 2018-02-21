@@ -7,7 +7,7 @@ class Stitch
 public:
     Stitch();
     void Calculate();
-    int GetLength();
+    float GetLength();
     void SetBytes(char byte0, char byte1, char byte2);
 
 private:
@@ -15,7 +15,7 @@ private:
     unsigned char padding_;
     int x_;
     int y_;
-    unsigned int length_;
+    float length_;
     unsigned int flags_;
 };
 

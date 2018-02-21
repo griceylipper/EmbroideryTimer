@@ -20,10 +20,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::OpenFile()
 {
-    QString file = QFileDialog::getOpenFileName(this, "Open Embroidery File", "D:/Libraries/Desktop/OneDrive/LHD Embroidery Data", tr("Wilcom files (*.emb);;Tajima files (*.dst)"));
+    QString file = QFileDialog::getOpenFileName(this, "Open Embroidery File", "D:/Libraries/Desktop/OneDrive/LHD Embroidery Data", tr("Tajima files (*.dst);;Wilcom files (*.emb)"));
     if (file.isEmpty())
     {
         //Nope
+        qDebug("Error - file.IsEmpty()");
         return;
     }
 
@@ -31,32 +32,28 @@ void MainWindow::OpenFile()
     if (!sFile.open(QFile::ReadOnly | QFile::Text))
     {
         //Nope
+        qDebug("Error - !sFile.open(QFile::ReadOnly | QFile::Text)");
         return;
     }
     filename = file;
-//    QTextStream in(&sFile);
-//    QString text = in.readAll();
 
-
-//    //uncompress file
-//    QByteArray textByteArray = text.toUtf8();
+    //Take whole file and put it in a QByteArray
     QByteArray textByteArray = sFile.readAll();
 
-    //header skips position to after data header. Not sure why it's offset by 0x0C, but oh well
-    int header = 0x200 - 0x0C;
-//    for (int i = 0; i < 3; ++i)
-//    {
-//        //Something not quite working here?
-//        //QString valueInHex= QString("%1").arg(char(textByteArray[i + header]), 0, 16);
-//        qDebug() << "Byte " << i << " = " << valueInHex;
-//    }
+    //Remove header. Should start at 0x200, but needs offset by 0x0C for some reason?
+    textByteArray.remove(0, 0x200 - 0x0C);
 
-    int test[6];
-    Stitch stitches[(textByteArray.size() / 3) + 200];
+    //Hex encoding
+    //textByteArray = textByteArray.toHex(' ');
+
+    //Set text output to show raw bytes in Hex
+    //ui->textBrowser->setText(QString(textByteArray));
+
+    Stitch stitches[(textByteArray.size() / 3)];
 
     for (uint i = 0; i < textByteArray.size(); i += 3)
     {
-        stitches[i / 3].SetBytes(textByteArray[header + i],textByteArray[header + i + 1], textByteArray[header + i + 2]);
+        stitches[i / 3].SetBytes(textByteArray[i],textByteArray[i + 1], textByteArray[2]);
     }
 
     for (uint i = 0; i < (textByteArray.size() / 3); i++)
@@ -64,14 +61,15 @@ void MainWindow::OpenFile()
         stitches[i].Calculate();
     }
 
-    //Not working?
-    int pos = filename.lastIndexOf(QChar('/'));
-    ui->filenameLabel->setText(filename.right(pos));
+//    //Not working?
+//    int pos = filename.lastIndexOf(QChar('/'));
+//    ui->filenameLabel->setText(filename.right(pos));
 
     QString outputText;
     for (uint i = 0; i < (textByteArray.size() / 3); i++)
     {
-        outputText.append(QString("Stitch ").append(QString::number(i).append(QString(": length =").append(stitches[i].GetLength()))));
+        QString temp = "Stitch " + QString::number(i) + ": length = " + QString::number(stitches[i].GetLength()) + QString("\n");
+        outputText.append(temp);
     }
 
     ui->textBrowser->setPlainText(outputText);
