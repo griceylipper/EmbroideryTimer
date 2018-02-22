@@ -49,7 +49,8 @@ void MainWindow::OpenFile()
     //Set text output to show raw bytes in Hex
     //ui->textBrowser->setText(QString(textByteArray));
 
-    Stitch stitches[(textByteArray.size() / 3)];
+    //Make array big enough to hold all stitch data
+    Stitch stitches[(textByteArray.size() / 3) + 10];
 
     for (uint i = 0; i < textByteArray.size(); i += 3)
     {
@@ -66,11 +67,22 @@ void MainWindow::OpenFile()
 //    ui->filenameLabel->setText(filename.right(pos));
 
     QString outputText;
+
+    float totalLength = 0;
     for (uint i = 0; i < (textByteArray.size() / 3); i++)
     {
-        QString temp = "Stitch " + QString::number(i) + ": length = " + QString::number(stitches[i].GetLength()) + QString("\n");
+        totalLength += stitches[i].GetLength();
+        QString temp = "Stitch " + QString::number(i + 1) + ": length = " + QString::number(stitches[i].GetLength()) + QString("\n");
         outputText.append(temp);
+        if (stitches[i].GetFlags() != 0)
+        {
+            QString flags = "*****FLAGS******\n";
+            outputText.append(flags);
+        }
     }
+
+    outputText.insert(0, "Total length = " + QString::number(totalLength) + "mm\n");
+
 
     ui->textBrowser->setPlainText(outputText);
 
@@ -90,9 +102,3 @@ void MainWindow::on_openButton_clicked()
     OpenFile();
     return;
 }
-
-//void MainWindow::on_pushButton_2_clicked()
-//{
-//    OpenFile();
-//    return;
-//}

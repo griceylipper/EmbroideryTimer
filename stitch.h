@@ -8,6 +8,7 @@ public:
     Stitch();
     void Calculate();
     float GetLength();
+    unsigned char GetFlags();
     void SetBytes(char byte0, char byte1, char byte2);
 
 private:
@@ -16,7 +17,7 @@ private:
     int x_;
     int y_;
     float length_;
-    unsigned int flags_;
+    unsigned char flags_;
 };
 
 #endif // STITCH_H
